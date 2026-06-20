@@ -1,0 +1,30 @@
+name: Generate Sponsors README
+
+on:
+  workflow_dispatch: # Allows you to manually trigger the workflow
+  schedule:
+    - cron: '30 15 * * *' # Runs daily at 15:30 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Generate Sponsors 💖
+        uses: JamesIves/github-sponsors-readme-action@v1
+        with:
+          token: ${{ secrets.PAT }}
+          file: 'README.md'
+
+      # The action only modifies the workspace copy of the file. 
+      # You need a deployment step to push the changes back to your repository.
+      - name: Commit & Push Changes 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: main # Change to your default branch if different (e.g., master)
+          folder: '.'
